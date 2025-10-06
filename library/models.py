@@ -3,6 +3,8 @@ from django.db import models, transaction
 from django.utils import timezone
 from django.urls import reverse
 from datetime import timedelta
+from accounts.models import Student
+from datetime import date
 
 
 class Department(models.Model):
@@ -22,10 +24,11 @@ class Book(models.Model):
     available_copies = models.PositiveIntegerField(default=1)
     description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
-    image = models.ImageField(upload_to='library/',blank=True, null=True)
+    image = models.ImageField(upload_to='library/uploads/',blank=True, null=True)
 
     def __str__(self):
         return f"{self.title} — {self.author}"
+    
     
 
 
@@ -70,3 +73,30 @@ class BorrowRequest(models.Model):
 
     def __str__(self):
         return f"{self.student.username} - {self.book.title} ({self.status})"
+    
+
+
+
+
+
+
+
+class BorrowRecord(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    book = models.ForeignKey(Book, on_delete=models.CASCADE)
+    department = models.CharField(max_length=100)  # Student-এর department
+    registration = models.IntegerField()  # Student-এর registration number
+    borrow_date = models.DateField(auto_now_add=True)
+    return_date = models.DateField(blank=True, null=True)
+    is_returned = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.student.name} borrowed {self.book.title}"
+
+    def save(self, *args, **kwargs):
+        """Student-এর department এবং registration স্বয়ংক্রিয়ভাবে নেওয়া হবে"""
+        if not self.department:
+            self.department = self.student.department
+        if not self.registration:
+            self.registration = self.student.registration
+        super().save(*args, **kwargs)

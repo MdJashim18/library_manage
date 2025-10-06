@@ -7,6 +7,8 @@ from django.contrib.admin.views.decorators import staff_member_required
 from .models import Book
 from .forms import BookForm
 from django.contrib import messages
+from .models import BorrowRecord
+from datetime import timedelta, date
 
 
 def book_detail(request, pk):
@@ -150,3 +152,25 @@ def delete_book(request, pk):
         book.delete()
         return redirect('library:book_list')
     return render(request, 'confirm_delete.html', {'book': book})
+
+
+
+
+
+
+
+# def is_librarian(user):
+#     return user.is_authenticated and user.role == 'librarian'
+
+@login_required
+def weekly_report(request):
+    today = date.today()
+    last_week = today - timedelta(days=7)
+
+    records = BorrowRecord.objects.filter(borrow_date__gte=last_week).order_by('-borrow_date')
+
+    return render(request, 'weekly_report.html', {
+        'records': records,
+        'today': today,
+        'last_week': last_week
+    })

@@ -15,5 +15,6 @@ urlpatterns = [
     path('books/', views.book_list, name='book_list'),
     path('book/<int:pk>/edit/', views.edit_book, name='edit_book'),
     path('book/<int:pk>/delete/', views.delete_book, name='delete_book'),
+    path('weekly-report/', views.weekly_report, name='weekly_report'),
 
 ]

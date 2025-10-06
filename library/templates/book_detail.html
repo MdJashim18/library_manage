@@ -16,20 +16,22 @@
                     <!-- Book Image -->
                     <div class="col-md-4">
                         {% if book.image %}
-                            <img src="{{ book.image.url }}" class="img-fluid h-100 w-100" alt="{{ book.title }}" style="object-fit: cover; min-height: 400px;">
+                        <img src="{{ book.image.url }}" class="img-fluid h-100 w-100" alt="{{ book.title }}"
+                            style="object-fit: cover; min-height: 400px;">
                         {% else %}
-                            <div class="bg-light d-flex align-items-center justify-content-center h-100" style="min-height: 400px;">
-                                <i class="fas fa-book-open fa-5x text-muted"></i>
-                            </div>
+                        <div class="bg-light d-flex align-items-center justify-content-center h-100"
+                            style="min-height: 400px;">
+                            <i class="fas fa-book-open fa-5x text-muted"></i>
+                        </div>
                         {% endif %}
                     </div>
-                    
+
                     <!-- Book Details -->
                     <div class="col-md-8">
                         <div class="card-body p-4 p-lg-5">
                             <!-- Book Title -->
                             <h1 class="card-title fw-bold text-primary mb-3">{{ book.title }}</h1>
-                            
+
                             <!-- Book Author -->
                             <div class="d-flex align-items-center mb-4">
                                 <div class="bg-primary bg-opacity-10 rounded p-2 me-3">
@@ -103,9 +105,17 @@
 
                             <!-- Action Buttons -->
                             <div class="d-flex gap-3 flex-wrap">
-                                <a href="{% url 'library:borrow_book' book.pk %}" class="btn btn-success btn-lg px-4 py-3 flex-fill">
+                                {% if user.is_authenticated %}
+                                <a href="{% url 'library:borrow_book' book.pk %}"
+                                    class="btn btn-success btn-lg px-4 py-3 flex-fill">
                                     <i class="fas fa-bookmark me-2"></i>Borrow this Book
                                 </a>
+                                {% else %}
+                                <a href="{% url 'login' %}?next={% url 'library:borrow_book' book.pk %}"
+                                    class="btn btn-warning btn-lg px-4 py-3 flex-fill">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Login to Borrow
+                                </a>
+                                {% endif %}
                                 <a href="{% url 'home' %}" class="btn btn-outline-primary btn-lg px-4 py-3 flex-fill">
                                     <i class="fas fa-books me-2"></i>Browse More Books
                                 </a>
@@ -114,15 +124,17 @@
                             <!-- Availability Status -->
                             <div class="mt-4">
                                 {% if book.available_copies > 0 %}
-                                    <div class="alert alert-success border-0 rounded-pill py-2 px-4 d-inline-flex align-items-center">
-                                        <i class="fas fa-check-circle me-2"></i>
-                                        <strong>Available for borrowing</strong>
-                                    </div>
+                                <div
+                                    class="alert alert-success border-0 rounded-pill py-2 px-4 d-inline-flex align-items-center">
+                                    <i class="fas fa-check-circle me-2"></i>
+                                    <strong>Available for borrowing</strong>
+                                </div>
                                 {% else %}
-                                    <div class="alert alert-warning border-0 rounded-pill py-2 px-4 d-inline-flex align-items-center">
-                                        <i class="fas fa-clock me-2"></i>
-                                        <strong>Currently unavailable</strong> - Check back later
-                                    </div>
+                                <div
+                                    class="alert alert-warning border-0 rounded-pill py-2 px-4 d-inline-flex align-items-center">
+                                    <i class="fas fa-clock me-2"></i>
+                                    <strong>Currently unavailable</strong> - Check back later
+                                </div>
                                 {% endif %}
                             </div>
                         </div>
@@ -217,20 +229,20 @@
         .card-body {
             padding: 1.5rem !important;
         }
-        
+
         .card-title {
             font-size: 1.5rem;
         }
-        
+
         .d-flex.gap-3 {
             flex-direction: column;
             gap: 1rem !important;
         }
-        
+
         .btn-lg {
             padding: 0.75rem 1.5rem;
         }
-        
+
         .row.g-0 .col-md-4 {
             min-height: 300px;
         }
@@ -240,17 +252,17 @@
         .card-body {
             padding: 1rem !important;
         }
-        
+
         .card-title {
             font-size: 1.25rem;
         }
-        
+
         .d-flex.align-items-center {
             flex-direction: column;
             text-align: center;
             gap: 0.5rem;
         }
-        
+
         .d-flex.align-items-center .me-3 {
             margin-right: 0 !important;
             margin-bottom: 0.5rem;
