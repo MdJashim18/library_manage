@@ -7,6 +7,8 @@ from django.contrib.auth.decorators import login_required
 from .import models,forms
 from library.models import BorrowRequest
 from django.contrib.auth.decorators import user_passes_test
+from django.http import JsonResponse
+from .models import CustomUser
 
 def register_view(request):
     if request.method == 'POST':
@@ -133,6 +135,12 @@ def edit_student(request,id):
             form.save()
             return redirect('admin_view_students')
     return render(request,'edit_student.html',{'form':form})
+
+def user_search(request):
+    query = request.GET.get('q', '')
+    users = CustomUser.objects.filter(username__icontains=query)[:10]
+    results = [{'id': u.id, 'text': u.username} for u in users]
+    return JsonResponse({'results': results})
 
 
 

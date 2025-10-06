@@ -16,6 +16,9 @@ class StudentForm(forms.ModelForm):
     class Meta:
         model = Student
         fields = '__all__'
+        widgets = {
+            'user': forms.Select(attrs={'class': 'form-control', 'id': 'user-search'}),
+        }
 
 
 class TeacherForm(forms.ModelForm):
