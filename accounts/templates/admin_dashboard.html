@@ -1,0 +1,447 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Welcome Header -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h2 mb-1 text-primary fw-bold">Welcome back, {{ user.username }}! 👋</h1>
+                    <p class="text-muted mb-0">Here's what's happening in your library system today.</p>
+                </div>
+                <div class="text-end">
+                    <p class="text-muted mb-1" id="currentDateTime"></p>
+                    <small class="text-muted">Last login: Today, {{ current_time }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-primary text-uppercase mb-1">
+                                Total Students
+                            </div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">{{ total_students|default:"1,248" }}</div>
+                            <div class="mt-2">
+                                <span class="badge bg-success bg-opacity-10 text-success">
+                                    <i class="fas fa-arrow-up me-1"></i>4.3%
+                                </span>
+                                <small class="text-muted ms-1">from last month</small>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-users fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-warning text-uppercase mb-1">
+                                Faculty Members
+                            </div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">{{ total_teachers|default:"86" }}</div>
+                            <div class="mt-2">
+                                <span class="badge bg-success bg-opacity-10 text-success">
+                                    <i class="fas fa-arrow-up me-1"></i>2.1%
+                                </span>
+                                <small class="text-muted ms-1">from last month</small>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-chalkboard-teacher fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-success text-uppercase mb-1">
+                                Library Staff
+                            </div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">{{ total_librarians|default:"24" }}</div>
+                            <div class="mt-2">
+                                <span class="badge bg-success bg-opacity-10 text-success">
+                                    <i class="fas fa-arrow-up me-1"></i>8.7%
+                                </span>
+                                <small class="text-muted ms-1">from last month</small>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-user-tie fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-info text-uppercase mb-1">
+                                Active Borrowings
+                            </div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">{{ active_borrowings|default:"342" }}</div>
+                            <div class="mt-2">
+                                <span class="badge bg-danger bg-opacity-10 text-danger">
+                                    <i class="fas fa-clock me-1"></i>12 overdue
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-book-open fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions & User Management -->
+    <div class="row">
+        <!-- Quick Actions Card -->
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow h-100">
+                <div class="card-header bg-white py-3">
+                    <h6 class="m-0 fw-bold text-primary">Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body text-center p-4">
+                                    <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                        <i class="fas fa-users fa-lg text-primary"></i>
+                                    </div>
+                                    <h5 class="fw-bold text-dark mb-2">Student Management</h5>
+                                    <p class="text-muted mb-3">Manage student records, registrations, and academic information</p>
+                                    <a href="{% url 'admin_view_students' %}" class="btn btn-primary w-100">
+                                        <i class="fas fa-arrow-right me-2"></i>Manage Students
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body text-center p-4">
+                                    <div class="bg-warning bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                        <i class="fas fa-chalkboard-teacher fa-lg text-warning"></i>
+                                    </div>
+                                    <h5 class="fw-bold text-dark mb-2">Faculty Management</h5>
+                                    <p class="text-muted mb-3">Handle teacher profiles, courses, and department assignments</p>
+                                    <a href="{% url 'admin_view_teachers' %}" class="btn btn-warning w-100">
+                                        <i class="fas fa-arrow-right me-2"></i>Manage Teachers
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body text-center p-4">
+                                    <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                        <i class="fas fa-user-tie fa-lg text-success"></i>
+                                    </div>
+                                    <h5 class="fw-bold text-dark mb-2">Library Staff</h5>
+                                    <p class="text-muted mb-3">Oversee librarians, shifts, and library operations</p>
+                                    <a href="{% url 'admin_view_librarians' %}" class="btn btn-success w-100">
+                                        <i class="fas fa-arrow-right me-2"></i>Manage Librarians
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body text-center p-4">
+                                    <div class="bg-info bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                        <i class="fas fa-cogs fa-lg text-info"></i>
+                                    </div>
+                                    <h5 class="fw-bold text-dark mb-2">System Settings</h5>
+                                    <p class="text-muted mb-3">Configure system preferences and administrative settings</p>
+                                    <a href="#" class="btn btn-info w-100">
+                                        <i class="fas fa-sliders-h me-2"></i>System Config
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card border-0 bg-light h-100">
+                                <div class="card-body text-center p-4">
+                                    <div class="bg-info bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 60px; height: 60px;">
+                                        <i class="fas fa-book-open fa-2x text-gray-300"></i>
+                                    </div>
+                                    <h5 class="fw-bold text-dark mb-2">Book Management</h5>
+                                    <p class="text-muted mb-3">Add books with details information</p>
+                                    <a href="{% url 'library:book_list' %}" class="btn btn-info w-100">
+                                        <i class="fas fa-arrow-right me-2"></i>Manage Book
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity & Quick Stats -->
+        <div class="col-lg-4 mb-4">
+            <!-- Recent Activity -->
+            <div class="card shadow mb-4">
+                <div class="card-header bg-white py-3">
+                    <h6 class="m-0 fw-bold text-primary">Recent Activity</h6>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item px-0 py-3">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-success bg-opacity-10 rounded p-2 me-3">
+                                    <i class="fas fa-user-plus text-success"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0 fw-semibold">New Student Registration</h6>
+                                    <small class="text-muted">5 minutes ago</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item px-0 py-3">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-warning bg-opacity-10 rounded p-2 me-3">
+                                    <i class="fas fa-book text-warning"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0 fw-semibold">Book Return Overdue</h6>
+                                    <small class="text-muted">1 hour ago</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item px-0 py-3">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-info bg-opacity-10 rounded p-2 me-3">
+                                    <i class="fas fa-chalkboard-teacher text-info"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0 fw-semibold">Teacher Profile Updated</h6>
+                                    <small class="text-muted">2 hours ago</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item px-0 py-3">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-primary bg-opacity-10 rounded p-2 me-3">
+                                    <i class="fas fa-shield-alt text-primary"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="mb-0 fw-semibold">System Backup Completed</h6>
+                                    <small class="text-muted">Today, 08:00 AM</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Status -->
+            <div class="card shadow">
+                <div class="card-header bg-white py-3">
+                    <h6 class="m-0 fw-bold text-primary">System Status</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="fw-semibold">Server Load</span>
+                        <span class="badge bg-success">Optimal</span>
+                    </div>
+                    <div class="progress mb-4" style="height: 8px;">
+                        <div class="progress-bar bg-success" style="width: 45%"></div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="fw-semibold">Database</span>
+                        <span class="badge bg-success">Online</span>
+                    </div>
+                    <div class="progress mb-4" style="height: 8px;">
+                        <div class="progress-bar bg-success" style="width: 100%"></div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="fw-semibold">Storage</span>
+                        <span class="badge bg-warning">68% Used</span>
+                    </div>
+                    <div class="progress" style="height: 8px;">
+                        <div class="progress-bar bg-warning" style="width: 68%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Additional Quick Links -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow">
+                <div class="card-header bg-white py-3">
+                    <h6 class="m-0 fw-bold text-primary">Quick Access</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-2 col-6">
+                            <a href="#" class="card border-0 bg-primary bg-opacity-10 text-center text-decoration-none p-3 h-100">
+                                <div class="card-body">
+                                    <i class="fas fa-chart-bar fa-2x text-primary mb-2"></i>
+                                    <h6 class="fw-semibold mb-0">Reports</h6>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-2 col-6">
+                            <a href="#" class="card border-0 bg-success bg-opacity-10 text-center text-decoration-none p-3 h-100">
+                                <div class="card-body">
+                                    <i class="fas fa-book fa-2x text-success mb-2"></i>
+                                    
+                                    <h6 class="fw-semibold mb-0">Books</h6>
+                                    
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-2 col-6">
+                            <a href="#" class="card border-0 bg-info bg-opacity-10 text-center text-decoration-none p-3 h-100">
+                                <div class="card-body">
+                                    <i class="fas fa-calendar-alt fa-2x text-info mb-2"></i>
+                                    <h6 class="fw-semibold mb-0">Events</h6>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-2 col-6">
+                            <a href="#" class="card border-0 bg-warning bg-opacity-10 text-center text-decoration-none p-3 h-100">
+                                <div class="card-body">
+                                    <i class="fas fa-bell fa-2x text-warning mb-2"></i>
+                                    <h6 class="fw-semibold mb-0">Notifications</h6>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-2 col-6">
+                            <a href="#" class="card border-0 bg-danger bg-opacity-10 text-center text-decoration-none p-3 h-100">
+                                <div class="card-body">
+                                    <i class="fas fa-cog fa-2x text-danger mb-2"></i>
+                                    <h6 class="fw-semibold mb-0">Settings</h6>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="col-md-2 col-6">
+                            <a href="#" class="card border-0 bg-secondary bg-opacity-10 text-center text-decoration-none p-3 h-100">
+                                <div class="card-body">
+                                    <i class="fas fa-question-circle fa-2x text-secondary mb-2"></i>
+                                    <h6 class="fw-semibold mb-0">Help</h6>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 0.75rem;
+        transition: transform 0.2s ease-in-out;
+    }
+    
+    .card:hover {
+        transform: translateY(-2px);
+    }
+    
+    .card-header {
+        border-bottom: 1px solid #e3e6f0;
+        border-radius: 0.75rem 0.75rem 0 0 !important;
+    }
+    
+    .border-start-primary {
+        border-left: 0.25rem solid #4e73df !important;
+    }
+    
+    .border-start-warning {
+        border-left: 0.25rem solid #f6c23e !important;
+    }
+    
+    .border-start-success {
+        border-left: 0.25rem solid #1cc88a !important;
+    }
+    
+    .border-start-info {
+        border-left: 0.25rem solid #36b9cc !important;
+    }
+    
+    .bg-opacity-10 {
+        background-color: rgba(var(--bs-primary-rgb), 0.1) !important;
+    }
+    
+    .shadow {
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
+    }
+    
+    .list-group-item {
+        border: none;
+        border-bottom: 1px solid rgba(0,0,0,.05);
+    }
+    
+    .list-group-item:last-child {
+        border-bottom: none;
+    }
+    
+    .progress {
+        border-radius: 1rem;
+    }
+    
+    .btn {
+        border-radius: 0.5rem;
+        font-weight: 500;
+        transition: all 0.2s ease-in-out;
+    }
+    
+    .btn:hover {
+        transform: translateY(-1px);
+    }
+</style>
+
+<script>
+    // Update current date and time
+    function updateDateTime() {
+        const now = new Date();
+        const options = { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        };
+        document.getElementById('currentDateTime').textContent = now.toLocaleDateString('en-US', options);
+    }
+    
+    // Update immediately and then every minute
+    updateDateTime();
+    setInterval(updateDateTime, 60000);
+</script>
+
+<!-- Include Font Awesome for icons -->
+<script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+{% endblock %}

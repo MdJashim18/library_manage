@@ -1,0 +1,276 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <!-- Header Section -->
+            <div class="text-center mb-5">
+                <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                    <i class="fas fa-bookmark fa-2x text-primary"></i>
+                </div>
+                <h2 class="fw-bold text-primary mb-2">Borrow Book</h2>
+                <p class="text-muted">Request to borrow "{{ book.title }}" from the library</p>
+            </div>
+
+            <!-- Book Info Card -->
+            <div class="card border-0 shadow-sm rounded-3 mb-4">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-3 text-center">
+                            {% if book.image %}
+                                <img src="{{ book.image.url }}" class="img-fluid rounded-3 shadow-sm" alt="{{ book.title }}" style="max-height: 150px; object-fit: cover;">
+                            {% else %}
+                                <div class="bg-light rounded-3 d-flex align-items-center justify-content-center" style="height: 150px;">
+                                    <i class="fas fa-book-open fa-3x text-muted"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-9">
+                            <h4 class="fw-bold text-dark mb-2">{{ book.title }}</h4>
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label fw-semibold text-muted mb-1">Author</label>
+                                    <p class="fw-semibold text-dark mb-0">{{ book.author }}</p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label fw-semibold text-muted mb-1">Department</label>
+                                    <p class="fw-semibold text-dark mb-0">{{ book.department }}</p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label fw-semibold text-muted mb-1">Available Copies</label>
+                                    <p class="fw-semibold text-dark mb-0">
+                                        {{ book.available_copies }} / {{ book.total_copies }}
+                                    </p>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label class="form-label fw-semibold text-muted mb-1">ISBN</label>
+                                    <p class="fw-semibold text-dark mb-0">{{ book.isbn }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Borrow Request Form -->
+            <div class="card border-0 shadow-lg rounded-3">
+                <div class="card-body p-4 p-md-5">
+                    <h4 class="fw-bold text-dark mb-4">
+                        <i class="fas fa-clipboard-list me-2 text-primary"></i>Borrowing Details
+                    </h4>
+                    
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Form Fields with Custom Styling -->
+                        <div class="row g-4">
+                            {% for field in form %}
+                            <div class="col-12">
+                                <label for="{{ field.id_for_label }}" class="form-label fw-semibold text-dark">
+                                    {% if field.name == 'student' %}
+                                        <i class="fas fa-user-graduate me-2 text-primary"></i>
+                                    {% elif field.name == 'book' %}
+                                        <i class="fas fa-book me-2 text-primary"></i>
+                                    {% elif field.name == 'request_date' %}
+                                        <i class="fas fa-calendar-alt me-2 text-primary"></i>
+                                    {% elif field.name == 'due_date' %}
+                                        <i class="fas fa-clock me-2 text-primary"></i>
+                                    {% elif field.name == 'purpose' %}
+                                        <i class="fas fa-bullseye me-2 text-primary"></i>
+                                    {% else %}
+                                        <i class="fas fa-tag me-2 text-primary"></i>
+                                    {% endif %}
+                                    {{ field.label }}
+                                </label>
+                                
+                                {% if field.field.widget.input_type == 'select' %}
+                                    <select name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-select py-3">
+                                        {% for choice in field.field.choices %}
+                                            <option value="{{ choice.0 }}" {% if field.value == choice.0 %}selected{% endif %}>
+                                                {{ choice.1 }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                {% elif field.field.widget.input_type == 'textarea' %}
+                                    <textarea name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-control py-3" rows="4" placeholder="Enter {{ field.label|lower }}">{{ field.value|default:'' }}</textarea>
+                                {% elif field.field.widget.input_type == 'date' %}
+                                    <input type="date" name="{{ field.name }}" id="{{ field.id_for_label }}" 
+                                           class="form-control py-3" value="{{ field.value|default:'' }}">
+                                {% else %}
+                                    <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" 
+                                           class="form-control py-3" value="{{ field.value|default:'' }}" 
+                                           placeholder="Enter {{ field.label|lower }}">
+                                {% endif %}
+                                
+                                {% if field.help_text %}
+                                <div class="form-text text-muted mt-2">
+                                    <small><i class="fas fa-info-circle me-1"></i>{{ field.help_text }}</small>
+                                </div>
+                                {% endif %}
+                                
+                                {% if field.errors %}
+                                <div class="invalid-feedback d-block mt-2">
+                                    {% for error in field.errors %}
+                                        <small><i class="fas fa-exclamation-triangle me-1"></i>{{ error }}</small>
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex gap-3 mt-5 pt-3">
+                            <button type="submit" class="btn btn-success btn-lg px-4 py-3 flex-fill">
+                                <i class="fas fa-paper-plane me-2"></i>Submit Request
+                            </button>
+                            <a href="{% url 'library:book_detail' book.pk %}" class="btn btn-outline-secondary btn-lg px-4 py-3 flex-fill">
+                                <i class="fas fa-times me-2"></i>Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Important Notes -->
+            <div class="alert alert-info border-0 rounded-3 mt-4" role="alert">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-info-circle fa-lg me-3 text-info"></i>
+                    <div>
+                        <h6 class="alert-heading fw-bold mb-2">Important Information</h6>
+                        <ul class="mb-0 ps-3">
+                            <li>Your request will be reviewed by library staff</li>
+                            <li>Standard borrowing period is 14 days</li>
+                            <li>You will be notified once your request is processed</li>
+                            <li>Please return the book on or before the due date</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        background: #ffffff;
+    }
+
+    .shadow-lg {
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .shadow-sm {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+    }
+
+    .rounded-3 {
+        border-radius: 1rem !important;
+    }
+
+    /* Form Styling */
+    .form-control, .form-select {
+        border: 2px solid #e2e8f0;
+        border-radius: 0.75rem;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background-color: #ffffff;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: #198754;
+        box-shadow: 0 0 0 3px rgba(25, 135, 84, 0.1);
+        background-color: #ffffff;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-text {
+        font-size: 0.875rem;
+        color: #718096;
+    }
+
+    /* Button Styling */
+    .btn {
+        border-radius: 0.75rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, #198754 0%, #157347 100%);
+        border: none;
+    }
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(25, 135, 84, 0.3);
+    }
+
+    .btn-outline-secondary {
+        border: 2px solid #6c757d;
+        color: #6c757d;
+    }
+
+    .btn-outline-secondary:hover {
+        background-color: #6c757d;
+        border-color: #6c757d;
+        transform: translateY(-2px);
+    }
+
+    /* Alert Styling */
+    .alert {
+        border-radius: 1rem !important;
+    }
+
+    /* Error Styling */
+    .invalid-feedback {
+        display: block;
+        font-size: 0.875rem;
+        color: #dc3545;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .card-body {
+            padding: 2rem !important;
+        }
+        
+        .d-flex.gap-3 {
+            flex-direction: column;
+            gap: 1rem !important;
+        }
+        
+        .btn-lg {
+            padding: 0.75rem 1.5rem;
+        }
+        
+        .text-center.mb-5 {
+            margin-bottom: 2rem !important;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .card-body {
+            padding: 1.5rem !important;
+        }
+        
+        .row.align-items-center {
+            text-align: center;
+        }
+        
+        .col-md-3 {
+            margin-bottom: 1rem;
+        }
+    }
+</style>
+
+<!-- Include Font Awesome for icons -->
+<script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+{% endblock %}

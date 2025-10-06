@@ -1,0 +1,444 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h3 mb-1 text-primary fw-bold">Faculty Management</h1>
+                    <p class="text-muted">Manage and view all teaching staff in the institution</p>
+                </div>
+                <div>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-user-plus me-2"></i>Add New Teacher
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-primary text-uppercase mb-1">
+                                Total Faculty
+                            </div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">{{ teachers|length }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-chalkboard-teacher fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-success text-uppercase mb-1">
+                                Active Teachers
+                            </div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">{{ active_teachers }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-user-check fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start-info shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-info text-uppercase mb-1">
+                                Departments
+                            </div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">{{ department_count }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-building fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start-warning shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                            <div class="text-xs fw-bold text-warning text-uppercase mb-1">
+                                New This Month
+                            </div>
+                            <div class="h5 mb-0 fw-bold text-gray-800">{{ new_teachers }}</div>
+                        </div>
+                        <div class="col-auto">
+                            <i class="fas fa-user-plus fa-2x text-gray-300"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-white py-3">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h6 class="m-0 fw-bold text-primary">Faculty Directory</h6>
+                </div>
+                <div class="col-md-6">
+                    <div class="row g-2">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0">
+                                    <i class="fas fa-search text-muted"></i>
+                                </span>
+                                <input type="text" class="form-control border-start-0" placeholder="Search teachers...">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <select class="form-select">
+                                <option selected>All Departments</option>
+                                <option>Computer Science</option>
+                                <option>Mathematics</option>
+                                <option>Physics</option>
+                                <option>Chemistry</option>
+                                <option>Biology</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <!-- Teachers Table -->
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" id="teachersTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col" class="fw-semibold text-uppercase text-xs ps-4">
+                                Teacher
+                            </th>
+                            <th scope="col" class="fw-semibold text-uppercase text-xs">
+                                Department
+                            </th>
+                            <th scope="col" class="fw-semibold text-uppercase text-xs">
+                                Registration ID
+                            </th>
+                            <th scope="col" class="fw-semibold text-uppercase text-xs">
+                                Status
+                            </th>
+                            <th scope="col" class="fw-semibold text-uppercase text-xs text-center pe-4">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for teacher in teachers %}
+                        <tr class="align-middle">
+                            <td class="ps-4">
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-sm me-3">
+                                        <div class="avatar-initial bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold" style="width: 45px; height: 45px;">
+                                            {{ teacher.name|slice:":1"|upper }}
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0 fw-semibold">{{ teacher.name }}</h6>
+                                        <small class="text-muted">
+                                            <i class="fas fa-envelope me-1"></i>{{ teacher.email|default:"No email" }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary bg-opacity-10 rounded p-2 me-3">
+                                        <i class="fas fa-building text-primary"></i>
+                                    </div>
+                                    <span class="fw-semibold text-dark">{{ teacher.department }}</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="fw-semibold text-dark">{{ teacher.registration }}</span>
+                            </td>
+                            <td>
+                                {% if teacher.status == "Active" %}
+                                <span class="badge bg-success bg-opacity-10 text-success px-3 py-2">
+                                    <i class="fas fa-circle me-1 small"></i>Active
+                                </span>
+                                {% elif teacher.status == "On Leave" %}
+                                <span class="badge bg-warning bg-opacity-10 text-warning px-3 py-2">
+                                    <i class="fas fa-clock me-1"></i>On Leave
+                                </span>
+                                {% else %}
+                                <span class="badge bg-secondary bg-opacity-10 text-secondary px-3 py-2">
+                                    <i class="fas fa-circle me-1 small"></i>Inactive
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center pe-4">
+                                <div class="btn-group" role="group">
+                                    <a href="{% url 'admin_teacher_detail' teacher.id %}" class="btn btn-sm btn-outline-primary rounded-start">
+                                        <i class="fas fa-eye me-1"></i>View
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary">
+                                        <a href="{% url 'edit_teacher' teacher.id %}"><i class="fas fa-edit"></i></a>
+                                    </button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger rounded-end">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <div class="py-4">
+                                    <i class="fas fa-chalkboard-teacher fa-3x text-muted mb-3"></i>
+                                    <h5 class="text-muted">No Teachers Found</h5>
+                                    <p class="text-muted">There are no teacher records in the system yet.</p>
+                                    <button class="btn btn-primary mt-2">
+                                        <i class="fas fa-user-plus me-2"></i>Add First Teacher
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if teachers.has_other_pages %}
+            <div class="d-flex justify-content-between align-items-center p-4 border-top">
+                <div class="text-muted">
+                    Showing {{ teachers.start_index }} to {{ teachers.end_index }} of {{ teachers.paginator.count }} entries
+                </div>
+                <nav aria-label="Teacher pagination">
+                    <ul class="pagination mb-0">
+                        {% if teachers.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ teachers.previous_page_number }}">
+                                <i class="fas fa-chevron-left me-1"></i>Previous
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">
+                                <i class="fas fa-chevron-left me-1"></i>Previous
+                            </span>
+                        </li>
+                        {% endif %}
+
+                        {% for i in teachers.paginator.page_range %}
+                            {% if teachers.number == i %}
+                            <li class="page-item active">
+                                <span class="page-link">{{ i }}</span>
+                            </li>
+                            {% else %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+
+                        {% if teachers.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ teachers.next_page_number }}">
+                                Next<i class="fas fa-chevron-right ms-1"></i>
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="page-item disabled">
+                            <span class="page-link">
+                                Next<i class="fas fa-chevron-right ms-1"></i>
+                            </span>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Quick Actions Card -->
+    <div class="row mt-4">
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0 fw-bold text-primary">Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-primary text-start">
+                            <i class="fas fa-file-export me-2"></i>Export Faculty List
+                        </button>
+                        <button class="btn btn-outline-primary text-start">
+                            <i class="fas fa-envelope me-2"></i>Send Bulk Email
+                        </button>
+                        <button class="btn btn-outline-primary text-start">
+                            <i class="fas fa-chart-bar me-2"></i>Generate Reports
+                        </button>
+                        <button class="btn btn-outline-primary text-start">
+                            <i class="fas fa-cog me-2"></i>Manage Departments
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white">
+                    <h6 class="mb-0 fw-bold text-primary">Department Distribution</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-3">
+                            <div class="border-end">
+                                <h5 class="fw-bold text-primary mb-1">12</h5>
+                                <small class="text-muted">Computer Science</small>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="border-end">
+                                <h5 class="fw-bold text-success mb-1">8</h5>
+                                <small class="text-muted">Mathematics</small>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="border-end">
+                                <h5 class="fw-bold text-info mb-1">6</h5>
+                                <small class="text-muted">Physics</small>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div>
+                                <h5 class="fw-bold text-warning mb-1">4</h5>
+                                <small class="text-muted">Chemistry</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+        border-radius: 0.75rem;
+        transition: transform 0.2s ease-in-out;
+    }
+    
+    .card:hover {
+        transform: translateY(-2px);
+    }
+    
+    .card-header {
+        border-bottom: 1px solid #e3e6f0;
+        border-radius: 0.75rem 0.75rem 0 0 !important;
+    }
+    
+    .border-start-primary {
+        border-left: 0.25rem solid #4e73df !important;
+    }
+    
+    .border-start-success {
+        border-left: 0.25rem solid #1cc88a !important;
+    }
+    
+    .border-start-info {
+        border-left: 0.25rem solid #36b9cc !important;
+    }
+    
+    .border-start-warning {
+        border-left: 0.25rem solid #f6c23e !important;
+    }
+    
+    .avatar-initial {
+        font-size: 1.1rem;
+    }
+    
+    .table th {
+        border-top: none;
+        font-weight: 600;
+        padding: 1rem 0.75rem;
+        font-size: 0.8rem;
+    }
+    
+    .table td {
+        padding: 1rem 0.75rem;
+        vertical-align: middle;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 0, 0, 0.02);
+        transform: translateX(4px);
+        transition: all 0.2s ease;
+    }
+    
+    .btn {
+        border-radius: 0.5rem;
+        font-weight: 500;
+    }
+    
+    .badge {
+        font-weight: 500;
+        border-radius: 0.5rem;
+    }
+    
+    .text-xs {
+        font-size: 0.75rem;
+    }
+    
+    .shadow {
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15) !important;
+    }
+    
+    .shadow-sm {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+    }
+    
+    .page-link {
+        border-radius: 0.35rem;
+        margin: 0 0.15rem;
+        border: 1px solid #e3e6f0;
+        color: #6e707e;
+    }
+    
+    .page-item.active .page-link {
+        background-color: #4e73df;
+        border-color: #4e73df;
+    }
+    
+    .bg-opacity-10 {
+        background-color: rgba(var(--bs-primary-rgb), 0.1) !important;
+    }
+    
+    .input-group-text {
+        border-radius: 0.5rem 0 0 0.5rem;
+    }
+    
+    .form-control:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+    }
+</style>
+
+<!-- Include Font Awesome for icons -->
+<script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+{% endblock %}

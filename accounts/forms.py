@@ -1,0 +1,30 @@
+# accounts/forms.py
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from .models import CustomUser,Student,Teacher,Librarian
+
+class RegisterForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+    role = forms.ChoiceField(choices=CustomUser.ROLE_CHOICES)
+
+    class Meta:
+        model = CustomUser
+        fields = ['username', 'email', 'role', 'password1', 'password2']
+
+
+class StudentForm(forms.ModelForm):
+    class Meta:
+        model = Student
+        fields = '__all__'
+
+
+class TeacherForm(forms.ModelForm):
+    class Meta:
+        model = Teacher
+        fields = '__all__'
+
+
+class LibrarianForm(forms.ModelForm):
+    class Meta:
+        model = Librarian
+        fields = '__all__'

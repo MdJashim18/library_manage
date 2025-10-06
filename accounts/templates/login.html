@@ -1,0 +1,289 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row min-vh-100">
+        <!-- Left Side - Brand/Image Section -->
+        <div class="col-lg-6 d-none d-lg-flex bg-primary bg-gradient">
+            <div class="d-flex align-items-center justify-content-center w-100 p-5">
+                <div class="text-center text-white">
+                    <div class="mb-5">
+                        <i class="fas fa-book-open fa-5x mb-4"></i>
+                        <h1 class="display-4 fw-bold mb-3">LibraryHub</h1>
+                        <p class="lead">Welcome back to your digital library management system</p>
+                    </div>
+                    <div class="mt-5">
+                        <div class="row text-center">
+                            <div class="col-4">
+                                <div class="border-end border-white border-2">
+                                    <h3 class="fw-bold">10K+</h3>
+                                    <small>Books</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="border-end border-white border-2">
+                                    <h3 class="fw-bold">5K+</h3>
+                                    <small>Students</small>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <h3 class="fw-bold">100+</h3>
+                                <small>Faculty</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Side - Login Form -->
+        <div class="col-lg-6 d-flex align-items-center justify-content-center">
+            <div class="w-100" style="max-width: 400px;">
+                <!-- Back to Home -->
+                <div class="text-start mb-4">
+                    <a href="/" class="text-decoration-none text-muted">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Home
+                    </a>
+                </div>
+
+                <!-- Login Card -->
+                <div class="card border-0 shadow-lg rounded-3">
+                    <div class="card-body p-5">
+                        <!-- Header -->
+                        <div class="text-center mb-4">
+                            <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                                <i class="fas fa-lock fa-2x text-primary"></i>
+                            </div>
+                            <h2 class="fw-bold text-dark mb-2">Welcome Back</h2>
+                            <p class="text-muted">Sign in to your account to continue</p>
+                        </div>
+
+                        <!-- Login Form -->
+                        <form method="post" novalidate>
+                            {% csrf_token %}
+                            
+                            <!-- Custom Form Styling -->
+                            <div class="mb-3">
+                                <label for="id_username" class="form-label fw-semibold text-dark">
+                                    <i class="fas fa-user me-2 text-primary"></i>Username
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0">
+                                        <i class="fas fa-user text-muted"></i>
+                                    </span>
+                                    <input type="text" name="username" class="form-control border-start-0 py-3" placeholder="Enter your username" required id="id_username">
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="id_password" class="form-label fw-semibold text-dark">
+                                    <i class="fas fa-key me-2 text-primary"></i>Password
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-light border-end-0">
+                                        <i class="fas fa-lock text-muted"></i>
+                                    </span>
+                                    <input type="password" name="password" class="form-control border-start-0 py-3" placeholder="Enter your password" required id="id_password">
+                                    <button class="btn btn-outline-secondary border-start-0" type="button" id="togglePassword">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Remember Me & Forgot Password -->
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="rememberMe">
+                                    <label class="form-check-label text-muted" for="rememberMe">
+                                        Remember me
+                                    </label>
+                                </div>
+                                <a href="#" class="text-decoration-none text-primary">Forgot password?</a>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <div class="d-grid mb-3">
+                                <button type="submit" class="btn btn-primary btn-lg py-3 fw-semibold">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                                </button>
+                            </div>
+
+                            <!-- Divider -->
+                            <div class="position-relative text-center my-4">
+                                <hr>
+                                <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted">or</span>
+                            </div>
+
+                            <!-- Social Login -->
+                            <div class="row g-2 mb-4">
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-outline-primary w-100 py-2">
+                                        <i class="fab fa-google me-2"></i>Google
+                                    </button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="button" class="btn btn-outline-dark w-100 py-2">
+                                        <i class="fab fa-microsoft me-2"></i>Microsoft
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                        <!-- Register Link -->
+                        <div class="text-center">
+                            <p class="text-muted mb-0">
+                                Don't have an account?
+                                <a href="{% url 'register' %}" class="text-primary text-decoration-none fw-semibold">Create one here</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Info -->
+                <div class="text-center mt-4">
+                    <small class="text-muted">
+                        <i class="fas fa-shield-alt me-1"></i>
+                        Your data is securely encrypted and protected
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .min-vh-100 {
+        min-height: 100vh;
+    }
+
+    .card {
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
+    }
+
+    .form-control {
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        border-color: #667eea;
+    }
+
+    .btn {
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .input-group-text {
+        border-radius: 0.5rem 0 0 0.5rem;
+    }
+
+    .bg-gradient {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .shadow-lg {
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+    }
+
+    .rounded-3 {
+        border-radius: 1rem !important;
+    }
+
+    /* Animation for form elements */
+    .form-control, .btn, .input-group-text {
+        transition: all 0.3s ease;
+    }
+
+    /* Hover effects */
+    .btn-outline-primary:hover, .btn-outline-dark:hover {
+        transform: translateY(-1px);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 991.98px) {
+        .d-none.d-lg-flex {
+            display: none !important;
+        }
+        
+        .col-lg-6 {
+            padding: 2rem 1rem;
+        }
+    }
+
+    /* Custom checkbox */
+    .form-check-input:checked {
+        background-color: #667eea;
+        border-color: #667eea;
+    }
+
+    /* Password toggle button */
+    #togglePassword {
+        border-radius: 0 0.5rem 0.5rem 0;
+    }
+</style>
+
+<script>
+    // Password visibility toggle
+    document.getElementById('togglePassword').addEventListener('click', function() {
+        const passwordInput = document.getElementById('id_password');
+        const icon = this.querySelector('i');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    });
+
+    // Form validation enhancement
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const username = document.getElementById('id_username');
+        const password = document.getElementById('id_password');
+        
+        if (!username.value.trim()) {
+            e.preventDefault();
+            username.focus();
+            return false;
+        }
+        
+        if (!password.value.trim()) {
+            e.preventDefault();
+            password.focus();
+            return false;
+        }
+    });
+
+    // Add loading state to submit button
+    document.querySelector('form').addEventListener('submit', function() {
+        const submitBtn = this.querySelector('button[type="submit"]');
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Signing In...';
+        submitBtn.disabled = true;
+    });
+</script>
+
+<!-- Include Font Awesome -->
+<script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+{% endblock %}

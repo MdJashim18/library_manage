@@ -1,0 +1,290 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-4">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="h2 fw-bold text-primary mb-2">
+                        <i class="fas fa-books me-2"></i>Book Collection
+                    </h1>
+                    <p class="text-muted mb-0">Manage all books in the library system</p>
+                </div>
+                <a href="{% url 'library:add_book' %}" class="btn btn-success btn-lg px-4">
+                    <i class="fas fa-plus-circle me-2"></i>Add New Book
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Books Table -->
+    <div class="card border-0 shadow-lg rounded-3">
+        <div class="card-body p-0">
+            {% if books %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="fw-semibold text-uppercase text-xs ps-4">#</th>
+                            <th class="fw-semibold text-uppercase text-xs">Book Title</th>
+                            <th class="fw-semibold text-uppercase text-xs">Author</th>
+                            <th class="fw-semibold text-uppercase text-xs">Department</th>
+                            <th class="fw-semibold text-uppercase text-xs text-center">Availability</th>
+                            <th class="fw-semibold text-uppercase text-xs text-center pe-4">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for book in books %}
+                        <tr class="align-middle">
+                            <td class="ps-4 fw-semibold text-muted">{{ forloop.counter }}</td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    {% if book.image %}
+                                    <img src="{{ book.image.url }}" class="rounded me-3" alt="{{ book.title }}" style="width: 40px; height: 50px; object-fit: cover;">
+                                    {% else %}
+                                    <div class="bg-light rounded d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 50px;">
+                                        <i class="fas fa-book text-muted"></i>
+                                    </div>
+                                    {% endif %}
+                                    <div>
+                                        <h6 class="fw-semibold text-dark mb-0">{{ book.title }}</h6>
+                                        <small class="text-muted">ISBN: {{ book.isbn }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="fw-semibold text-dark">{{ book.author }}</span>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2">
+                                    <i class="fas fa-building me-1"></i>{{ book.department }}
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                {% if book.available_copies > 0 %}
+                                <span class="badge bg-success bg-opacity-10 text-success px-3 py-2">
+                                    <i class="fas fa-check-circle me-1"></i>
+                                    {{ book.available_copies }}/{{ book.total_copies }} Available
+                                </span>
+                                {% else %}
+                                <span class="badge bg-danger bg-opacity-10 text-danger px-3 py-2">
+                                    <i class="fas fa-times-circle me-1"></i>
+                                    {{ book.available_copies }}/{{ book.total_copies }} Available
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center pe-4">
+                                <div class="btn-group" role="group">
+                                    <a href="{% url 'library:book_detail' book.pk %}" class="btn btn-outline-primary btn-sm rounded-start">
+                                        <i class="fas fa-eye me-1"></i>View
+                                    </a>
+                                    <a href="{% url 'library:edit_book' book.pk %}" class="btn btn-outline-warning btn-sm">
+                                        <i class="fas fa-edit me-1"></i>Edit
+                                    </a>
+                                    <a href="{% url 'library:delete_book' book.pk %}" class="btn btn-outline-danger btn-sm rounded-end">
+                                        <i class="fas fa-trash me-1"></i>Delete
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <!-- Empty State -->
+            <div class="text-center py-5">
+                <div class="py-4">
+                    <i class="fas fa-book-open fa-4x text-muted mb-4"></i>
+                    <h4 class="text-muted mb-3">No Books Found</h4>
+                    <p class="text-muted mb-4">There are no books in the library system yet.</p>
+                    <a href="{% url 'library:add_book' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-plus-circle me-2"></i>Add First Book
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Summary Card -->
+    {% if books %}
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm rounded-3">
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <div class="border-end">
+                                <h3 class="fw-bold text-primary mb-1">{{ books|length }}</h3>
+                                <small class="text-muted">Total Books</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="border-end">
+                                <h3 class="fw-bold text-success mb-1">{{ available_books_count }}</h3>
+                                <small class="text-muted">Available Books</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="border-end">
+                                <h3 class="fw-bold text-warning mb-1">{{ departments_count }}</h3>
+                                <small class="text-muted">Departments</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div>
+                                <h3 class="fw-bold text-info mb-1">{{ total_copies }}</h3>
+                                <small class="text-muted">Total Copies</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .card {
+        border: none;
+    }
+
+    .shadow-lg {
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .shadow-sm {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+    }
+
+    .rounded-3 {
+        border-radius: 1rem !important;
+    }
+
+    /* Table Styling */
+    .table th {
+        border-top: none;
+        font-weight: 600;
+        padding: 1rem 0.75rem;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .table td {
+        padding: 1rem 0.75rem;
+        vertical-align: middle;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+
+    /* Button Styling */
+    .btn {
+        border-radius: 0.5rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-group .btn {
+        border-radius: 0;
+    }
+
+    .btn-group .btn:first-child {
+        border-top-left-radius: 0.5rem;
+        border-bottom-left-radius: 0.5rem;
+    }
+
+    .btn-group .btn:last-child {
+        border-top-right-radius: 0.5rem;
+        border-bottom-right-radius: 0.5rem;
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, #198754 0%, #157347 100%);
+        border: none;
+    }
+
+    .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(25, 135, 84, 0.3);
+    }
+
+    .btn-outline-primary:hover {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+        transform: translateY(-1px);
+    }
+
+    .btn-outline-warning:hover {
+        background-color: #ffc107;
+        border-color: #ffc107;
+        color: #000;
+        transform: translateY(-1px);
+    }
+
+    .btn-outline-danger:hover {
+        background-color: #dc3545;
+        border-color: #dc3545;
+        transform: translateY(-1px);
+    }
+
+    /* Badge Styling */
+    .badge {
+        border-radius: 0.5rem;
+        font-weight: 500;
+    }
+
+    .bg-opacity-10 {
+        background-color: rgba(var(--bs-primary-rgb), 0.1) !important;
+    }
+
+    .text-xs {
+        font-size: 0.75rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .table-responsive {
+            font-size: 0.875rem;
+        }
+        
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .btn-group .btn {
+            border-radius: 0.5rem !important;
+        }
+        
+        .d-flex.justify-content-between.align-items-center {
+            flex-direction: column;
+            gap: 1rem;
+            text-align: center;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .card-body {
+            padding: 1rem !important;
+        }
+        
+        .table td, .table th {
+            padding: 0.75rem 0.5rem;
+        }
+        
+        .btn-lg {
+            padding: 0.75rem 1.5rem;
+        }
+    }
+</style>
+
+<!-- Include Font Awesome for icons -->
+<script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card shadow-lg p-4" style="width: 400px;">
+        <h3 class="text-center mb-4">Add Librarian</h3>
+        <form method="post" enctype="multipart/form-data" novalidate>
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="d-grid mt-3">
+                <input class="btn btn-primary" type="submit" value="Submit">
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

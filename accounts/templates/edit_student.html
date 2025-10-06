@@ -1,0 +1,200 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container-fluid bg-light min-vh-100 py-5">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-md-6 col-lg-5">
+            <!-- Update Student Card -->
+            <div class="card border-0 shadow-lg rounded-4">
+                <div class="card-body p-5">
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <div class="bg-primary bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" 
+                             style="width: 70px; height: 70px;">
+                            <i class="fas fa-user-edit fa-xl text-primary"></i>
+                        </div>
+                        <h2 class="fw-bold text-dark mb-2">Update Student Profile</h2>
+                        <p class="text-muted mb-0">Update your information below</p>
+                    </div>
+
+                    <!-- Update Form -->
+                    <form method="post" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+                        
+                        <!-- Crispy Form with Custom Styling -->
+                        <div class="form-container">
+                            {{ form|crispy }}
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg py-3 fw-semibold">
+                                <i class="fas fa-save me-2"></i>Update Profile
+                            </button>
+                            <a href="{% url 'student_dashboard' %}" class="btn btn-outline-secondary py-3">
+                                <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
+
+    .min-vh-100 {
+        min-height: 100vh;
+    }
+
+    .card {
+        border: none;
+        background: #ffffff;
+    }
+
+    .shadow-lg {
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .rounded-4 {
+        border-radius: 1rem !important;
+    }
+
+    /* Crispy Forms Custom Styling */
+    .form-container .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-container label {
+        font-weight: 600;
+        color: #2d3748;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-container .form-control {
+        border: 2px solid #e2e8f0;
+        border-radius: 0.75rem;
+        padding: 0.75rem 1rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background-color: #ffffff;
+    }
+
+    .form-container .form-control:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        background-color: #ffffff;
+    }
+
+    .form-container .form-text {
+        font-size: 0.875rem;
+        color: #718096;
+        margin-top: 0.25rem;
+    }
+
+    /* File Input Styling */
+    .form-container input[type="file"] {
+        padding: 0.5rem;
+    }
+
+    .form-container input[type="file"]:focus {
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    /* Select Input Styling */
+    .form-container select.form-control {
+        padding: 0.75rem 1rem;
+    }
+
+    /* Error Styling */
+    .form-container .invalid-feedback {
+        display: block;
+        font-size: 0.875rem;
+        color: #e53e3e;
+        margin-top: 0.25rem;
+    }
+
+    .form-container .is-invalid {
+        border-color: #e53e3e;
+    }
+
+    .form-container .is-invalid:focus {
+        border-color: #e53e3e;
+        box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
+    }
+
+    /* Button Styling */
+    .btn-primary {
+        background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        border: none;
+        border-radius: 0.75rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-primary:active {
+        transform: translateY(0);
+    }
+
+    .btn-outline-secondary {
+        border: 2px solid #e2e8f0;
+        border-radius: 0.75rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-outline-secondary:hover {
+        border-color: #9ca3af;
+        background-color: #f9fafb;
+        transform: translateY(-1px);
+    }
+
+    /* Link Styling */
+    a.text-primary {
+        transition: color 0.3s ease;
+    }
+
+    a.text-primary:hover {
+        color: #1d4ed8 !important;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .card-body {
+            padding: 2rem !important;
+        }
+        
+        .container-fluid {
+            padding: 1rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .card-body {
+            padding: 1.5rem !important;
+        }
+        
+        .btn-lg {
+            padding: 0.75rem 1.5rem;
+        }
+        
+        .btn {
+            padding: 0.75rem 1rem;
+        }
+    }
+</style>
+
+<!-- Include Font Awesome for icons -->
+<script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+{% endblock %}

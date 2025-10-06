@@ -1,0 +1,316 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container py-4">
+    <!-- Welcome Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card shadow-lg border-0 rounded-3">
+                <div class="card-body text-center p-5">
+                    <div class="bg-success bg-opacity-10 rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                        <i class="fas fa-user-tie fa-2x text-success"></i>
+                    </div>
+                    <h2 class="mb-2 text-success fw-bold">Welcome, {{ user.username }}! 👋</h2>
+                    <p class="text-muted mb-0">Library Management Dashboard</p>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="{% url 'add_librarian' %}" class="btn btn-success btn-lg px-4">
+                            <i class="fas fa-user-plus me-2"></i>Add Your Info
+                        </a>
+                        {% if student %}
+                        <a href="{% url 'edit_librarian' librarian.id %}" class="btn btn-warning btn-lg px-4">
+                            <i class="fas fa-edit me-2"></i>Edit Your Info
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Librarian Information -->
+    {% if librarian %}
+    <div class="card shadow-sm border-0 rounded-3 mb-4">
+        <div class="card-header bg-success text-white py-3 rounded-top-3">
+            <h5 class="mb-0 fw-bold"><i class="fas fa-user-tie me-2"></i>Librarian Information</h5>
+        </div>
+        <div class="card-body p-4">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold text-muted mb-1">Full Name</label>
+                            <p class="mb-3 fw-semibold text-dark">{{ librarian.name }}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold text-muted mb-1">Email Address</label>
+                            <p class="mb-3 fw-semibold text-dark">{{ librarian.email }}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold text-muted mb-1">Phone Number</label>
+                            <p class="mb-3 fw-semibold text-dark">{{ librarian.phone }}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold text-muted mb-1">Department</label>
+                            <p class="mb-3 fw-semibold text-dark">{{ librarian.department }}</p>
+                        </div>
+                        <div class="col-sm-6">
+                            <label class="form-label fw-semibold text-muted mb-1">Joined Date</label>
+                            <p class="mb-0 fw-semibold text-dark">{{ librarian.joined_date }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    {% if librarian.image %}
+                        <img src="{{ librarian.image.url }}" class="img-thumbnail rounded-circle shadow-sm" width="180" height="180">
+                    {% else %}
+                        <div class="bg-light rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 180px; height: 180px;">
+                            <i class="fas fa-user-tie fa-3x text-muted"></i>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Borrow Requests -->
+    <div class="card shadow-sm border-0 rounded-3 mb-4">
+        <div class="card-header bg-primary text-white py-3 rounded-top-3">
+            <h5 class="mb-0 fw-bold"><i class="fas fa-book me-2"></i>Borrow Requests</h5>
+        </div>
+        <div class="card-body p-0">
+            {% if borrow_requests %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4 fw-semibold">Student Name</th>
+                            <th class="fw-semibold">Department</th>
+                            <th class="fw-semibold">Book Title</th>
+                            <th class="fw-semibold">Request Date</th>
+                            <th class="fw-semibold">Status</th>
+                            <th class="pe-4 fw-semibold text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for req in borrow_requests %}
+                        <tr>
+                            <td class="ps-4 fw-semibold">{{ req.name }}</td>
+                            <td>{{ req.department }}</td>
+                            <td class="fw-semibold text-dark">{{ req.book.title }}</td>
+                            <td>{{ req.request_date }}</td>
+                            <td>
+                                {% if req.status == 'pending' %}
+                                <span class="badge bg-warning text-dark px-3 py-2">
+                                    <i class="fas fa-clock me-1"></i>Pending
+                                </span>
+                                {% elif req.status == 'approved' %}
+                                <span class="badge bg-success px-3 py-2">
+                                    <i class="fas fa-check me-1"></i>Approved
+                                </span>
+                                {% else %}
+                                <span class="badge bg-danger px-3 py-2">
+                                    <i class="fas fa-times me-1"></i>Rejected
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td class="pe-4 text-center">
+                                {% if req.status == 'pending' %}
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{% url 'library:approve_request' req.id %}" class="btn btn-success">
+                                        <i class="fas fa-check me-1"></i>Approve
+                                    </a>
+                                    <a href="{% url 'library:reject_request' req.id %}" class="btn btn-danger">
+                                        <i class="fas fa-times me-1"></i>Reject
+                                    </a>
+                                </div>
+                                {% else %}
+                                <span class="text-muted fw-semibold">No Action</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-4">
+                <i class="fas fa-book-open fa-2x text-muted mb-3"></i>
+                <p class="text-muted mb-0">No pending requests right now.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Return Requests -->
+    <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-header bg-info text-white py-3 rounded-top-3">
+            <h5 class="mb-0 fw-bold"><i class="fas fa-exchange-alt me-2"></i>Return Requests</h5>
+        </div>
+        <div class="card-body p-0">
+            {% if return_requests %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-4 fw-semibold">Student Name</th>
+                            <th class="fw-semibold">Book Title</th>
+                            <th class="fw-semibold">Borrowed On</th>
+                            <th class="fw-semibold">Return Request Date</th>
+                            <th class="fw-semibold">Status</th>
+                            <th class="pe-4 fw-semibold text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for r in return_requests %}
+                        <tr>
+                            <td class="ps-4 fw-semibold">{{ r.name }}</td>
+                            <td class="fw-semibold text-dark">{{ r.book.title }}</td>
+                            <td>{{ r.request_date }}</td>
+                            <td>{{ r.return_date }}</td>
+                            <td>
+                                {% if r.status == 'pending' %}
+                                <span class="badge bg-warning text-dark px-3 py-2">
+                                    <i class="fas fa-clock me-1"></i>Pending
+                                </span>
+                                {% elif r.status == 'returned' %}
+                                <span class="badge bg-success px-3 py-2">
+                                    <i class="fas fa-check me-1"></i>Returned
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td class="pe-4 text-center">
+                                {% if r.status == 'return_pending' %}
+                                <a href="{% url 'library:confirm_return' r.id %}" class="btn btn-success btn-sm">
+                                    <i class="fas fa-check-circle me-1"></i>Confirm Return
+                                </a>
+                                {% elif r.status == 'returned' %}
+                                <span class="text-muted fw-semibold">Returned</span>
+                                {% else %}
+                                <span class="text-muted">---</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-4">
+                <i class="fas fa-exchange-alt fa-2x text-muted mb-3"></i>
+                <p class="text-muted mb-0">No return requests right now.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        border: none;
+    }
+    
+    .shadow-lg {
+        box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.1) !important;
+    }
+    
+    .shadow-sm {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+    }
+    
+    .rounded-3 {
+        border-radius: 0.75rem !important;
+    }
+    
+    .rounded-top-3 {
+        border-top-left-radius: 0.75rem !important;
+        border-top-right-radius: 0.75rem !important;
+    }
+    
+    .btn {
+        border-radius: 0.5rem;
+        font-weight: 500;
+    }
+    
+    .btn-sm {
+        padding: 0.375rem 0.75rem;
+        font-size: 0.875rem;
+    }
+    
+    .badge {
+        border-radius: 0.5rem;
+        font-weight: 500;
+    }
+    
+    .table th {
+        border-top: none;
+        font-weight: 600;
+        padding: 1rem 0.75rem;
+        font-size: 0.875rem;
+    }
+    
+    .table td {
+        padding: 1rem 0.75rem;
+        vertical-align: middle;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: rgba(0, 0, 0, 0.02);
+    }
+    
+    .btn-group .btn {
+        border-radius: 0;
+    }
+    
+    .btn-group .btn:first-child {
+        border-top-left-radius: 0.5rem;
+        border-bottom-left-radius: 0.5rem;
+    }
+    
+    .btn-group .btn:last-child {
+        border-top-right-radius: 0.5rem;
+        border-bottom-right-radius: 0.5rem;
+    }
+    
+    .form-label {
+        font-size: 0.875rem;
+        margin-bottom: 0.25rem;
+    }
+    
+    .bg-success {
+        background: linear-gradient(135deg, #198754 0%, #157347 100%) !important;
+    }
+    
+    .bg-primary {
+        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%) !important;
+    }
+    
+    .bg-info {
+        background: linear-gradient(135deg, #0dcaf0 0%, #0aa2c0 100%) !important;
+    }
+    
+    .bg-opacity-10 {
+        background-color: rgba(var(--bs-success-rgb), 0.1) !important;
+    }
+    
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .table-responsive {
+            font-size: 0.875rem;
+        }
+        
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+        
+        .btn-group .btn {
+            border-radius: 0.5rem !important;
+        }
+    }
+</style>
+
+<!-- Include Font Awesome for icons -->
+<script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
+{% endblock %}
