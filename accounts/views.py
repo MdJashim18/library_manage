@@ -14,12 +14,24 @@ def register_view(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
+            role = form.cleaned_data['role']
+
+            # Double-check security at backend level
+            if role == 'librarian' and CustomUser.objects.filter(role='librarian').exists():
+                form.add_error('role', 'A librarian account already exists.')
+                return render(request, 'register.html', {'form': form})
+
+            if role == 'admin' and CustomUser.objects.filter(role='admin').exists():
+                form.add_error('role', 'An admin account already exists.')
+                return render(request, 'register.html', {'form': form})
+
             user = form.save()
             login(request, user)
             return redirect_user_dashboard(user)
     else:
         form = RegisterForm()
     return render(request, 'register.html', {'form': form})
+
 
 
 def login_view(request):

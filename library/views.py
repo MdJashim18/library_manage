@@ -167,10 +167,19 @@ def weekly_report(request):
     today = date.today()
     last_week = today - timedelta(days=7)
 
-    records = BorrowRecord.objects.filter(borrow_date__gte=last_week).order_by('-borrow_date')
+    # গত ৭ দিনের রেকর্ড আনবে
+    records = BorrowRecord.objects.filter(borrow_date__range=[last_week, today])
 
-    return render(request, 'weekly_report.html', {
+    returned_count = records.filter(is_returned=True).count()
+    borrowed_count = records.filter(is_returned=False).count()
+    unique_students = records.values('student').distinct().count()
+
+    context = {
         'records': records,
+        'returned_count': returned_count,
+        'borrowed_count': borrowed_count,
+        'unique_students': unique_students,
+        'last_week': last_week,
         'today': today,
-        'last_week': last_week
-    })
+    }
+    return render(request, 'weekly_report.html', context)
