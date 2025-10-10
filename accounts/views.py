@@ -16,7 +16,7 @@ def register_view(request):
         if form.is_valid():
             role = form.cleaned_data['role']
 
-            # Double-check security at backend level
+            
             if role == 'librarian' and CustomUser.objects.filter(role='librarian').exists():
                 form.add_error('role', 'A librarian account already exists.')
                 return render(request, 'register.html', {'form': form})
@@ -55,7 +55,6 @@ def profile_view(request):
     return redirect_user_dashboard(request.user)
 
 
-# Role অনুযায়ী redirect helper function
 def redirect_user_dashboard(user):
     if user.role == 'student':
         return redirect('student_dashboard')
@@ -69,7 +68,7 @@ def redirect_user_dashboard(user):
         return redirect('login')
 
 
-# Dashboards
+
 @login_required
 def student_dashboard(request):
     try:
@@ -77,7 +76,6 @@ def student_dashboard(request):
     except models.Student.DoesNotExist:
         student = None
 
-    # এখানে CustomUser (request.user) দিয়েই query করো
     borrows = BorrowRequest.objects.filter(student=request.user).order_by('-request_date')
 
     return render(request, 'student_dashboard.html', {
@@ -147,6 +145,10 @@ def edit_student(request,id):
             form.save()
             return redirect('admin_view_students')
     return render(request,'edit_student.html',{'form':form})
+
+def delete_student(request,id):
+    std = models.Student.objects.get(pk=id).delete()
+    return redirect('admin_dashboard')
 
 def user_search(request):
     query = request.GET.get('q', '')
@@ -222,34 +224,34 @@ def edit_librarian(request,id):
 
 
 
-# Decorator to allow only admin users
+
 def admin_required(view_func):
     decorated_view_func = user_passes_test(lambda u: u.role == 'admin')(view_func)
     return decorated_view_func
 
 
-# List all students
+
 @admin_required
 def admin_view_students(request):
     students = models.Student.objects.all()
     return render(request, 'admin_students.html', {'students': students})
 
 
-# List all teachers
+
 @admin_required
 def admin_view_teachers(request):
     teachers = models.Teacher.objects.all()
     return render(request, 'admin_teachers.html', {'teachers': teachers})
 
 
-# List all librarians
+
 @admin_required
 def admin_view_librarians(request):
     librarians = models.Librarian.objects.all()
     return render(request, 'admin_librarians.html', {'librarians': librarians})
 
 
-# Individual student detail / dashboard
+
 @admin_required
 def admin_student_detail(request, id):
     student = models.Student.objects.get(pk=id)
@@ -257,14 +259,14 @@ def admin_student_detail(request, id):
     return render(request, 'admin_student_detail.html', {'student': student, 'borrows': borrows})
 
 
-# Individual teacher detail
+
 @admin_required
 def admin_teacher_detail(request, id):
     teacher = models.Teacher.objects.get(pk=id)
     return render(request, 'admin_teacher_detail.html', {'teacher': teacher})
 
 
-# Individual librarian detail
+
 @admin_required
 def admin_librarian_detail(request, id):
     librarian = models.Librarian.objects.get(pk=id)

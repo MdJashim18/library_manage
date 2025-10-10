@@ -66,7 +66,7 @@ class BorrowRequest(models.Model):
     def mark_returned(self):
         self.status = 'returned'
         self.return_date = timezone.now()
-        self.book.available_copies += 1  # ✅ copy increase
+        self.book.available_copies += 1 
         self.book.save()
         self.save()
 
@@ -84,8 +84,8 @@ class BorrowRequest(models.Model):
 class BorrowRecord(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
-    department = models.CharField(max_length=100)  # Student-এর department
-    registration = models.IntegerField()  # Student-এর registration number
+    department = models.CharField(max_length=100)
+    registration = models.IntegerField() 
     borrow_date = models.DateField(auto_now_add=True)
     return_date = models.DateField(blank=True, null=True)
     is_returned = models.BooleanField(default=False)

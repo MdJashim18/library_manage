@@ -15,15 +15,12 @@ class RegisterForm(UserCreationForm):
         super().__init__(*args, **kwargs)
         roles = list(CustomUser.ROLE_CHOICES)
 
-        # যদি librarian already থাকে, তাহলে choices থেকে সেটা বাদ দাও
         if CustomUser.objects.filter(role='librarian').exists():
             roles = [r for r in roles if r[0] != 'librarian']
 
-        # যদি admin already থাকে, তাহলে choices থেকে সেটা বাদ দাও
         if CustomUser.objects.filter(role='admin').exists():
             roles = [r for r in roles if r[0] != 'admin']
 
-        # নতুন filtered roles assign করো
         self.fields['role'].choices = roles
 
 

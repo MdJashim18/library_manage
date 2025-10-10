@@ -45,7 +45,7 @@ def manage_borrow_requests(request):
 
 
 
-# @staff_member_required
+
 @login_required
 def approve_request(request, id):
     req = get_object_or_404(BorrowRequest, id=id)
@@ -53,7 +53,7 @@ def approve_request(request, id):
     req.approve()
     return redirect('librarian_dashboard')
 
-# @staff_member_required
+
 @login_required
 def reject_request(request, id):
     req = get_object_or_404(BorrowRequest, id=id)
@@ -69,7 +69,7 @@ def return_request(request, pk):
     if borrow.student != request.user:
         return redirect('student_dashboard')
 
-    # librarian confirm করার জন্য pending status
+   
     borrow.status = 'return_pending'
     borrow.save()
 
@@ -77,12 +77,11 @@ def return_request(request, pk):
 
 
 @login_required
-# @staff_member_required
 def confirm_return(request, id):
     borrow = get_object_or_404(BorrowRequest, id=id)
 
     if borrow.status == 'return_pending':
-        borrow.mark_returned()  # এখানে available_copies += 1 + return_date set + status update
+        borrow.mark_returned()  
 
     return redirect('librarian_dashboard')
 
@@ -97,9 +96,6 @@ def student_dashboard(request):
 
 @login_required
 def add_book(request):
-    # if not request.user.is_staff:  # শুধুমাত্র librarian/admin পারবে
-    #     messages.error(request, "You are not authorized to add books.")
-    #     return redirect('librarian_dashboard')
 
     if request.method == 'POST':
         form = BookForm(request.POST, request.FILES)
@@ -159,15 +155,12 @@ def delete_book(request, pk):
 
 
 
-# def is_librarian(user):
-#     return user.is_authenticated and user.role == 'librarian'
 
 @login_required
 def weekly_report(request):
     today = date.today()
     last_week = today - timedelta(days=7)
 
-    # গত ৭ দিনের রেকর্ড আনবে
     records = BorrowRecord.objects.filter(borrow_date__range=[last_week, today])
 
     returned_count = records.filter(is_returned=True).count()

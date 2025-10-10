@@ -24,6 +24,7 @@ urlpatterns = [
     path('student_form/',student_form,name="student_form"),
     path('add_student/',add_student,name="add_student"),
     path('edit_student/<int:id>/',edit_student,name="edit_student"),
+    path('delete_student/<int:id>/',views.delete_student,name="delete_student"),
     path('user-search/', views.user_search, name='user_search'),
 
     #Teacher
