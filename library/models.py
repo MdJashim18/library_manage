@@ -94,7 +94,7 @@ class BorrowRecord(models.Model):
         return f"{self.student.name} borrowed {self.book.title}"
 
     def save(self, *args, **kwargs):
-        """Student-এর department এবং registration স্বয়ংক্রিয়ভাবে নেওয়া হবে"""
+        
         if not self.department:
             self.department = self.student.department
         if not self.registration:
